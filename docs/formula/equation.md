@@ -126,7 +126,7 @@ $$
 {VE}_{n, i, s, t_1} = {VE}_{n, i, s, t_{|T|}}
 $$
 
-### Storage power-energy capacity
+### Power-Energy capacity of storage
 
 Some storage technologies (e.g., pumped hydro storage) are subject to constraints on the ratio between their power capacity (e.g., pump) and energy capacity (e.g., reservoir).
 

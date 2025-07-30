@@ -4,9 +4,6 @@ icon: material/alphabet-greek
 
 # Symbols
 
-!!! note
-    Here, capital characters refer to endogenous variables, while lowercase characters indicate exogenous parameters.
-
 ## Sets
 
 |name|description|
@@ -24,17 +21,17 @@ icon: material/alphabet-greek
 
 |name|description|
 |---|---|
-|$n^{npb}$|set of regions for nodal energy balance constraint|
-|$t^{npb}$|set of timeslices for nodal energy balance constraint|
-|$MN_{n^{npb},n}$|region group combination for nodal power balance constraint|
-|$MT_{t^{npb},t}$|timeslice group combination for nodal power balance constraint|
-|$k^{sup}$|set of energies for energy supply constraint|
-|$n^{sup}$|set fo regions for energy supply constraint|
-|$ME_{n^{sup},n}$|region group combination for energy supply constraint|
-|$MK_{k^{sup},k}$|energy group combination for energy supply constraint|
-|$n^{emi}$|set of regions for emission constraint|
-|$MQ_{n^{emi},n}$|region group combination for emission constraint|
-|$ML_{n,i,l}$|node, sector and link combination for power-energy capacity constraint for storage|
+|$n^{npb}$|set of regions for [nodal energy balance constraint](../equation/#nodal-energy-balance)|
+|$t^{npb}$|set of timeslices for [nodal energy balance constraint](../equation/#nodal-energy-balance)|
+|$MN_{n^{npb},n}$|region group combination for [nodal energy balance constraint](../equation/#nodal-energy-balance)|
+|$MT_{t^{npb},t}$|timeslice group combination for [nodal energy balance constraint](../equation/#nodal-energy-balance)|
+|$k^{sup}$|set of energies for [energy supply constraint](../equation/#energy-supply)|
+|$n^{sup}$|set fo regions for [energy supply constraint](../equation/#energy-supply)|
+|$ME_{n^{sup},n}$|region group combination for [energy supply constraint](../equation/#energy-supply)|
+|$MK_{k^{sup},k}$|energy group combination for [energy supply constraint](../equation/#energy-supply)|
+|$n^{emi}$|set of regions for [emission constraint](../equation/#CO2-emission)|
+|$MQ_{n^{emi},n}$|region group combination for [emission constraint](../equation/#CO2-emission)|
+|$ML_{n,i,l}$|node, sector and link combination for [power-energy capacity constraint for storage](../equaion/#power-energy-capacity-of-storage)|
 <!--
 |$FL_IR\in n, i, r$|sector-generator flag|
 |$FL_IS\in n, i, s$|sector-storage flag|
