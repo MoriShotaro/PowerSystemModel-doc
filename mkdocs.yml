@@ -1,3 +1,93 @@
 site_name: PowerSystemModel v1.1
+
 theme:
   name: material
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/link
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off
+        name: Switch to system preference
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.path
+    - navigation.indexes
+    - toc.follow
+    # - toc.integrate
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - search.suggest
+  icon:
+    logo: material/flash-outline
+
+nav:
+  - Home: index.md
+  - Model structure:
+      - structure.md
+  - Model formula:
+      - formula/index.md
+      - Symbols: formula/symbol.md
+      - Equations: formula/equation.md
+  - Model data:
+      - data.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/MoriShotaro
+
+repo_url: https://github.com/MoriShotaro/PowerSystemModel
+
+repo_name: MoriShotaro/PowerSystemModel
+
+copyright: Shotaro Mori, 2025
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - footnotes
+  - attr_list
+  - md_in_html
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+
+extra_css:
+  - https://unpkg.com/katex@0/dist/katex.min.css
+  - stylesheets/extra.css
+
+plugins:
+  - git-revision-date-localized:
+      enable_creation_date: true
