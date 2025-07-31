@@ -9,7 +9,7 @@ icon: material/draw-pen
 
 ## Objective function
 
-The objective function is expressed as the minimization of total system costs, including investment, operation and management (O&M) cost.
+The objective function is expressed as the minimization of total system costs, including new installation, fixed and variable operation and management (O&M) and replacement cost.
 
 $$
 {VTC} =
@@ -17,6 +17,13 @@ $$
 \displaystyle \sum_{l} \left[ {facc}_{l} \cdot {VFR}_{l} + {ffoc}_{l} \cdot {VFS}_{l} + {farc}_{l} \cdot {VFP}_{l} \right]  +
 \displaystyle \sum_{n, i, s} \left[ {eacc}_{n, i, s} \cdot {VER}_{n, i, s} + {efoc}_{n, i, s} \cdot {VES}_{n, i, s} + {earc}_{n, i, s} \cdot {VEP}_{n, i, s} \right]  +
 \displaystyle \sum_{t} {wt}_{t} \cdot \left[ \sum_{n, i, r} \left[ {gvoc}_{n, i, r} \cdot {VG}_{n, i, r, t} \right]  + \displaystyle \sum_{l, t} \left[ {fvoc}_{l} \cdot  ( {VFF}_{l, t} + {VFB}_{l, t} )  \right] \right] \to min
+$$
+
+Here, new installation and replacement cost (e.g., ${gcc}_{n, i, r}$) is annualized based on the discount rate (e.g., ${galp}_{n, i, r}$) and lifetime (e.g., ${glt}_{n, i, r}$), as illustrated in the following example.
+
+$$
+{gacc}_{n, i, r} = {gcc}_{n, i, r} \cdot \frac{{galp}_{n, i, r} \cdot \left(1 + {galp}_{n, i, r}\right)^{{glt}_{n, i, r}}}
+{\left(1 + {galp}_{n, i, r}\right)^{{glt}_{n, i, r}}-1} \cdot t\_int
 $$
 
 ## Generator operation & capacity
@@ -30,8 +37,8 @@ $$
 $$
 
 For dispatchable generators, the output in each timeslices is constraited not to exceed the installed capacity (${gmx}_{n, i, r, t}=1$).
-For non-dispatchable generators, the output in each timeslices is constrainted by output pattern ($0 \leq {gmx}_{n, i, r, t} \leq 1$).
-Hense, the curtailed output of solar and wind power is accounted for in the postprocessing as follows:
+
+For non-dispatchable generators, the output in each timeslices is constrainted by exogeneous output pattern ($0 \leq {gmx}_{n, i, r, t} \leq 1$). The curtailed output of solar and wind power is accounted for in the postprocessing as follows:
 
 $$
 {gmx}_{n, i, r, t} \cdot {VGS}_{n, i, r}-{VG}_{n, i, r, t}
@@ -67,7 +74,9 @@ $$
 {fbmn}_{l, t} \cdot {VFS}_{l} \leq {VFB}_{l, t} \leq {fbmx}_{l, t} \cdot {VFS}_{l}
 $$
 
-To formulate the energy flow in a lossy transport model [^1], two separate variables are introduced for the forward and backward directions of energy flow. Each of these flows is subject to distinct parameters specifying the minimum and maximum energy flow per unit. For links that allows only unidirectional energy flow (e.g., electrolyser), the backward energy flow is constrained to zero (${fbmx}_{l, t} = 0$).
+To formulate the energy flow in a lossy transport model [^1], two separate variables are introduced for the forward and backward directions of energy flow. 
+
+For links that allows only unidirectional energy flow (e.g., electrolyser), the backward energy flow is constrained to zero (${fbmx}_{l, t} = 0$).
 
 ### Minimum/Maximum capacity of link
 
@@ -136,13 +145,21 @@ $$
 
 ## Nodal energy balance
 
+The energy balance for each regional group, sector, and timeslice group is represented by the following equation.
+
 $$
-\displaystyle \sum_{n\in MN_{n^{npb},n} } \displaystyle \sum_{t\in MT_{t^{npb},t} } \left[ \displaystyle \sum_{r}{VG}_{n, i, r, t} + \displaystyle \sum_{s}{VH}_{n, i, s, t} - \displaystyle \sum_{l} \left[ {kff}_{n, i, l} \cdot {VFF}_{l, t} \right]  + \displaystyle \sum_{l} \left[ {kbf}_{n, i, l} \cdot {VFB}_{l, t} \right]\right]  = {dmd}_{n^{npb}, i, t^{npb}} + \delta^{npb}_{n^{npb}, i, t^{npb}}
+\displaystyle \sum_{n\in MN_{n^{npb},n} } \displaystyle \sum_{t\in MT_{t^{npb},t} } \left[ \displaystyle \sum_{r}{VG}_{n, i, r, t} + \displaystyle \sum_{s}{VH}_{n, i, s, t} - \displaystyle \sum_{l} \left[ {kff}_{n, i, l} \cdot {VFF}_{l, t} \right]  + \displaystyle \sum_{l} \left[ {kbf}_{n, i, l} \cdot {VFB}_{l, t} \right]\right]  =
+{dmd}_{n^{npb}, i, t^{npb}} + \delta^{npb}_{n^{npb}, i, t^{npb}} \quad \left( \forall \left(n^{npb}, i, t^{npb} \right) \in \left\{ \left(n^{npb}, i, t^{npb} \right) | {{FL}_{n^{npb}, i, t^{npb}} = 1} \right\} \right)
 $$
 
-## Technology stock balance
+Here, ${FL}_{n^{npb}, i, t^{npb}}$ is a flag that defines the combinations of region groups, sectors, and timeslice groups for which the energy balance is imposed. In sectors where oversupply is not allowed (e.g. electricity supply and demand), the slack variable is fixed to zero ($\delta^{npb}_{n^{npb}, i, t^{npb}}=1$).
 
-### 
+## Technology stock
+
+### Technology stock balance
+
+The stock capacity of technologies is represented by the sum of existing stock, newly installed stock and replaced stock.
+Here, stocks that have reached the end of their lifetime are retired based on vintage information.
 
 $$
 {VGS}_{n, i, r} =  ( {VGR}_{n, i, r} + {VGP}_{n, i, r} )  \cdot t\_int + \displaystyle \sum_{y}{gsc}_{n, i, r, y} \quad \left( \forall y\in \left\{y | y + {glt}_{n,i,r} \leq y^* \right\} \subset H \right)
@@ -155,6 +172,8 @@ $$
 $$
 {VES}_{n, i, s} =  ( {VER}_{n, i, s} + {VEP}_{n, i, s} )  \cdot t\_int + \displaystyle \sum_{y}{esc}_{n, i, s, y} \quad \left( \forall y\in \left\{y | y + {elt}_{n,i,s} \leq y^* \right\} \subset H \right)
 $$
+
+Here, some technologies can be replaced (e.g., hydropower), but the stock capacity that can be replaced is limited to the capacity that retires in the simulation year.
 
 $$
 {gsr}_{n, i, r} \geq {VGP}_{n, i, r}
@@ -170,6 +189,8 @@ $$
 
 ### Dynamic stock change
 
+The capacity newly installed in a given simulation year is carried over as the remaining stock in the following simulation year.
+
 $$
 {gsc}^{y+1}_{n, i, r, y} = {VGR}_{n, i, r}
 $$
@@ -182,27 +203,29 @@ $$
 {esc}^{y+1}_{n, i, s, y} = {VER}_{n, i, s}
 $$
 
+The capacity that retires in a given simulation year is determined based on the remaining stock from the previous simulation year.
+
 $$
-{gsr}_{n, i, r} = \sum_{y} {gsc}_{n, i, r, y} \quad \left( \forall y\in \left\{y | y + {glt}_{n,i,r} \geq y^* \right\} \subset H \right)
+{gsr}_{n, i, r} = \frac {\sum_{y} {gsc}_{n, i, r, y}} {t\_int} \quad \left( \forall y\in \left\{y | y + {glt}_{n,i,r} \geq y^* \right\} \subset H \right)
 $$
 
 $$
-{fsr}_{l} = \sum_{y} {fsc}_{l, y} \quad \left( \forall y\in \left\{y | y + {flt}_{l} \geq y^* \right\} \subset H \right)
+{fsr}_{l} = \frac {\sum_{y} {fsc}_{l, y}} {t\_int} \quad \left( \forall y\in \left\{y | y + {flt}_{l} \geq y^* \right\} \subset H \right)
 $$
 
 $$
-{esr}_{n, i, s} = \sum_{y} {esc}_{n, i, s, y} \quad \left( \forall y\in \left\{y | y + {elt}_{n,i,s} \geq y^* \right\} \subset H \right)
+{esr}_{n, i, s} = \frac {\sum_{y} {esc}_{n, i, s, y}} {t\_int} \quad \left( \forall y\in \left\{y | y + {elt}_{n,i,s} \geq y^* \right\} \subset H \right)
 $$
 
 ## Energy supply
 
-### Energy supply accounting
+Energy supply to the modeled system is accounted for based on generator operation and its efficiency.
 
 $$
 {VP}_{n, i, k} = \displaystyle \sum_{r, t} \left[ {wt}_{t} \cdot {VG}_{n, i, r, t} \cdot {geta}_{n, i, r, k} \right]
 $$
 
-### maximum/minimum energy supply
+The supply of specific energy groups to region groups is subject to upper and lower limits.
 
 $$
 {pmin}_{n^{sup}, k^{sup}} \leq \displaystyle \sum_{n\in ME_{n^{sup},n} } \displaystyle \sum_{k\in MK_{k^{sup},k} } \displaystyle \sum_{i}{VP}_{n, i, k}
@@ -214,13 +237,13 @@ $$
 
 ## CO2 emission
 
-### CO2 emission accounting
+CO2 emissions are accounted for based on the energy supplied to the modeled system and their emission factors.
 
 $$
 {VQ}_{n, i} = \displaystyle \sum_{k} \left[ {VP}_{n, i, k} \cdot {gas}_{n, i, k} \right]
 $$
 
-### maximum CO2 emission
+CO2 emissions in specific region groups are constrained as follows.
 
 $$
 \displaystyle \sum_{n\in MQ_{n^{emi},n}} \displaystyle \sum_{i}{VQ}_{n, i}  \leq {qmax}_{n^{emi}}
