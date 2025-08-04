@@ -55,11 +55,11 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/MoriShotaro
+      link: https://github.com/shotaromo
 
-repo_url: https://github.com/MoriShotaro/PowerSystemModel
+repo_url: https://github.com/shotaromo/PowerSystemModel
 
-repo_name: MoriShotaro/PowerSystemModel
+repo_name: shotaromo/PowerSystemModel
 
 copyright: Shotaro Mori, 2025
 
